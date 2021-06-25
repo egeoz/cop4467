@@ -7,6 +7,7 @@
 #### Fetching Dependencies
 
 	$ go get fyne.io/fyne/v2
+	$ go get github.com/mattevans/pwned-passwords
 	$ git clone https://github.com/egeoz/cop4467.git
 
 ### Build
