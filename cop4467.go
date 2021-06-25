@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	hibp "github.com/mattevans/pwned-passwords"
 )
 
 var a = app.New()
@@ -23,6 +24,9 @@ var hasDigits bool
 var hasSymbols bool
 var hasLowerCase bool
 var hasUpperCase bool
+var isPwned bool
+
+var checkPwned = hibp.NewClient(1)
 
 const windowWidth = 600
 const windowHeight = 200
@@ -36,12 +40,14 @@ var lblHasLowerCaseDefaultText = "Lower-case: "
 var lblHasNumsDefaultText = "Numbers: "
 var lblHasUpperCaseDefaultText = "Upper-case: "
 var lblHasSpecialDefaultText = "Special characters: "
+var lblIsCompromisedDefaultText = "Compromised: "
 var lblCharCount = widget.NewLabel(lblCharCountDefaultText)
 var lblUniqueCount = widget.NewLabel(lblUniqueCountDefaultText)
 var lblHasSpecial = widget.NewLabel(lblHasSpecialDefaultText)
 var lblHasNums = widget.NewLabel(lblHasNumsDefaultText)
 var lblHasUpperCase = widget.NewLabel(lblHasUpperCaseDefaultText)
 var lblHasLowerCase = widget.NewLabel(lblHasLowerCaseDefaultText)
+var lblIsCompromised = widget.NewLabelWithStyle(lblIsCompromisedDefaultText, fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 
 const (
 	check   = "✓"
@@ -106,6 +112,7 @@ func checkPasswordStrenght(passwd string) {
 }
 
 func btnCheck_onClick() {
+	isPwned = false
 	hasDigits = false
 	hasSymbols = false
 	hasUpperCase = false
@@ -166,7 +173,18 @@ func btnCheck_onClick() {
 		score += float64(charCount) * 1.5
 		score += float64(uniqueCharCount) * 2
 	}
-	fmt.Println(score)
+
+	ret, err := checkPwned.Pwned.Compromised(passwdBox.Text)
+
+	if ret && err == nil {
+		lblIsCompromised.SetText(fmt.Sprintf(lblIsCompromisedDefaultText+"%s", "True"))
+		score = 0
+	} else if err != nil {
+		lblIsCompromised.SetText(fmt.Sprintf(lblIsCompromisedDefaultText+"%s", "Error"))
+	} else {
+		lblIsCompromised.SetText(fmt.Sprintf(lblIsCompromisedDefaultText+"%s", "False"))
+	}
+
 	passwordScore.SetValue(score / 100.0)
 }
 
@@ -177,7 +195,7 @@ func main() {
 
 	btnCheck := widget.NewButtonWithIcon("Check Password", theme.ConfirmIcon(), btnCheck_onClick)
 
-	containerWindow := container.New(layout.NewGridLayout(1), lblTitle, passwdBox, btnCheck, passwordScore, containerDetails)
+	containerWindow := container.New(layout.NewGridLayout(1), lblTitle, passwdBox, btnCheck, passwordScore, containerDetails, lblIsCompromised)
 
 	w.SetContent(container.NewMax(containerWindow))
 	w.Resize(fyne.NewSize(windowWidth, windowHeight))
