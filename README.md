@@ -5,12 +5,12 @@
 - Fyne
 
 #### Fetching Dependencies
-`$ go get fyne.io/fyne/v2`
 
-`$ git clone https://github.com/egeoz/cop4467.git`
+	$ go get fyne.io/fyne/v2
+	$ git clone https://github.com/egeoz/cop4467.git
 
 ### Build
-`$ cd cop4467`
 
-`$ go build`
+	$ cd cop4467
+	$ go build
 
