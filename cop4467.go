@@ -62,7 +62,7 @@ const (
 	upperCaseCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
-func checkPasswordStrenght(passwd string) {
+func checkPasswordStrength(passwd string) {
 	charCount = len(passwd)
 	for _, a := range digits {
 		if strings.ContainsRune(passwd, a) {
@@ -122,7 +122,7 @@ func btnCheck_onClick() {
 	uniqueCharCount = 0
 	prevChar = ' '
 
-	checkPasswordStrenght(passwdBox.Text)
+	checkPasswordStrength(passwdBox.Text)
 
 	lblCharCount.SetText(fmt.Sprintf(lblCharCountDefaultText+"%d", charCount))
 	lblUniqueCount.SetText(fmt.Sprintf(lblUniqueCountDefaultText+"%d", uniqueCharCount))
